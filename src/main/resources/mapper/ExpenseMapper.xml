@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.admin.pium.mapper.ExpenseMapper">
+
+    <resultMap id="ExpenseResultMap" type="com.admin.pium.entity.Expense">
+        <id property="id" column="id"/>
+        <result property="expenseType" column="expense_type"/>
+        <result property="category" column="category"/>
+        <result property="amount" column="amount"/>
+        <result property="expenseDate" column="expense_date"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.admin.pium.entity.Expense" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO expenses (expense_type, category, amount, expense_date, description)
+        VALUES (#{expenseType}, #{category}, #{amount}, #{expenseDate}, #{description})
+    </insert>
+
+    <update id="update" parameterType="com.admin.pium.entity.Expense">
+        UPDATE expenses
+        SET expense_type = #{expenseType},
+            category = #{category},
+            amount = #{amount},
+            expense_date = #{expenseDate},
+            description = #{description},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM expenses WHERE id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="ExpenseResultMap">
+        SELECT * FROM expenses WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="ExpenseResultMap">
+        SELECT * FROM expenses ORDER BY expense_date DESC
+    </select>
+
+    <select id="findByExpenseType" resultMap="ExpenseResultMap">
+        SELECT * FROM expenses WHERE expense_type = #{expenseType} ORDER BY expense_date DESC
+    </select>
+
+    <select id="sumByDateRange" resultType="java.lang.Integer">
+        SELECT SUM(amount)
+        FROM expenses
+        WHERE expense_date BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <select id="searchByKeyword" resultMap="ExpenseResultMap">
+        SELECT * FROM expenses
+        WHERE description LIKE CONCAT('%', #{keyword}, '%')
+           OR expense_type LIKE CONCAT('%', #{keyword}, '%')
+           OR category LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY expense_date DESC
+    </select>
+
+    <select id="findByCategory" resultMap="ExpenseResultMap">
+        SELECT * FROM expenses WHERE category = #{category} ORDER BY expense_date DESC
+    </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.admin.pium.mapper.SubjectMapper">
+
+    <resultMap id="SubjectResultMap" type="com.admin.pium.entity.Subject">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.admin.pium.entity.Subject" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO subjects (name, description)
+        VALUES (#{name}, #{description})
+    </insert>
+
+    <update id="update" parameterType="com.admin.pium.entity.Subject">
+        UPDATE subjects
+        SET name = #{name},
+            description = #{description}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM subjects WHERE id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="SubjectResultMap">
+        SELECT * FROM subjects WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="SubjectResultMap">
+        SELECT * FROM subjects ORDER BY id
+    </select>
+
+    <select id="findByName" resultMap="SubjectResultMap">
+        SELECT * FROM subjects WHERE name = #{name}
+    </select>
+
+</mapper>
