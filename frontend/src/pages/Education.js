@@ -235,7 +235,7 @@ function Education() {
                                             <td style={{ whiteSpace: 'pre-line', maxWidth: '400px' }}>{record.content || '-'}</td>
                                             <td>
                                                 {record.imagePath ? (
-                                                    <a href={`http://localhost:8080${record.imagePath}`} target="_blank" rel="noopener noreferrer">
+                                                    <a href={`${process.env.REACT_APP_API_URL}${record.imagePath}`} target="_blank" rel="noopener noreferrer">
                                                         <FiImage /> 이미지 보기
                                                     </a>
                                                 ) : '-'}
@@ -350,7 +350,7 @@ function Education() {
                                     </div>
                                     {uploadedFile && (
                                         <img
-                                            src={`http://localhost:8080${uploadedFile.path}`}
+                                            src={`${process.env.REACT_APP_API_URL}${uploadedFile.path}`}
                                             alt="Preview"
                                             style={{ marginTop: '10px', maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }}
                                         />
