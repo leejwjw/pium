@@ -1,6 +1,9 @@
 spring:
   application:
     name: pium
+  web:
+    resources:
+      static-locations: classpath:/static/
 
   # PostgreSQL Database Configuration
   datasource:
