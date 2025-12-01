@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.18'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'com.github.node-gradle.node' version '7.0.1'
 }
 
 group = 'com.admin'
@@ -42,12 +43,41 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// Ensure frontend static files are included in the JAR
-tasks.named('processResources') {
-	dependsOn 'copyFrontendBuild'
+// Node.js Configuration
+node {
+	version = '18.19.0'
+	npmVersion = '10.2.3'
+	download = true
+	workDir = file("${project.projectDir}/.gradle/nodejs")
+	npmWorkDir = file("${project.projectDir}/.gradle/npm")
+	nodeProjectDir = file("${project.projectDir}/frontend")
+}
+
+// Frontend build tasks
+task npmInstall(type: com.github.gradle.node.npm.task.NpmTask) {
+	workingDir = file("${project.projectDir}/frontend")
+	args = ['install']
+}
+
+task npmBuild(type: com.github.gradle.node.npm.task.NpmTask) {
+	dependsOn npmInstall
+	workingDir = file("${project.projectDir}/frontend")
+	args = ['run', 'build']
 }
 
 task copyFrontendBuild(type: Copy) {
+	dependsOn npmBuild
 	from 'frontend/build'
 	into 'src/main/resources/static'
+}
+
+// Ensure frontend is built and copied before processing resources
+tasks.named('processResources') {
+	dependsOn copyFrontendBuild
+}
+
+// Clean task should also clean frontend
+tasks.named('clean') {
+	delete 'src/main/resources/static'
+	delete 'frontend/build'
 }

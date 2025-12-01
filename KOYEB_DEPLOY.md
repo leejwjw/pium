@@ -6,7 +6,7 @@ Koyeb 대시보드에서 다음 설정을 적용하세요:
 
 ### Build Command
 ```bash
-chmod +x build.sh && ./build.sh
+./gradlew build -x test
 ```
 
 ### Run Command
@@ -28,7 +28,7 @@ java -jar build/libs/pium-0.0.1-SNAPSHOT.jar
 2. **Koyeb 대시보드 설정**
    - Service 설정으로 이동
    - Build section에서:
-     - **Build command**: `chmod +x build.sh && ./build.sh`
+     - **Build command**: `./gradlew build -x test`
      - **Run command**: `java -jar build/libs/pium-0.0.1-SNAPSHOT.jar`
    - Deploy 버튼 클릭
 
