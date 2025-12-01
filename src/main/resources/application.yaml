@@ -7,9 +7,9 @@ spring:
 
   # PostgreSQL Database Configuration
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:1234}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/koyebdb}
+    username: ${DB_USERNAME:koyebdb}
+    password: ${DB_PASSWORD:npg_2iEOCbsTmYA9}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
