@@ -53,20 +53,9 @@ node {
 	nodeProjectDir = file("${project.projectDir}/frontend")
 }
 
-// Frontend build tasks
-task npmInstall(type: com.github.gradle.node.npm.task.NpmTask) {
-	workingDir = file("${project.projectDir}/frontend")
-	args = ['install']
-}
-
-task npmBuild(type: com.github.gradle.node.npm.task.NpmTask) {
-	dependsOn npmInstall
-	workingDir = file("${project.projectDir}/frontend")
-	args = ['run', 'build']
-}
-
+// Frontend build task - uses plugin's built-in npm_run_build task
 task copyFrontendBuild(type: Copy) {
-	dependsOn npmBuild
+	dependsOn 'npm_run_build'
 	from 'frontend/build'
 	into 'src/main/resources/static'
 }
