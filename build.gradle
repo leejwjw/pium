@@ -41,3 +41,13 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Ensure frontend static files are included in the JAR
+tasks.named('processResources') {
+	dependsOn 'copyFrontendBuild'
+}
+
+task copyFrontendBuild(type: Copy) {
+	from 'frontend/build'
+	into 'src/main/resources/static'
+}
