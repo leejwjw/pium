@@ -3,7 +3,6 @@
 /* 필터 섹션 */
 .filter-section {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 16px;
     margin-bottom: 24px;

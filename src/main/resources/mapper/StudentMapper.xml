@@ -57,7 +57,7 @@
     </select>
 
     <select id="findAll" resultMap="StudentResultMap">
-        SELECT * FROM students WHERE admin_id = #{adminId} AND status = 'ACTIVE' ORDER BY created_at DESC
+        SELECT * FROM students WHERE admin_id = #{adminId}  ORDER BY created_at DESC
     </select>
 
     <select id="findAllActive" resultMap="StudentResultMap">

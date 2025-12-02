@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleAPI } from '../services/api';
-import { FiPlus, FiEdit, FiTrash2, FiX, FiCalendar } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiTrash2, FiX } from 'react-icons/fi';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { formatLocalDate, getCurrentLocalDate } from '../utils/dateUtils';
 import './Common.css';
 import './Attendance.css';
 
@@ -13,7 +14,7 @@ function Schedule() {
     const [currentSchedule, setCurrentSchedule] = useState(null);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [formData, setFormData] = useState({
-        scheduleDate: new Date().toISOString().split('T')[0],
+        scheduleDate: getCurrentLocalDate(),
         title: '',
         description: ''
     });
@@ -44,7 +45,7 @@ function Schedule() {
         } else {
             setCurrentSchedule(null);
             setFormData({
-                scheduleDate: selectedDate.toISOString().split('T')[0],
+                scheduleDate: formatLocalDate(selectedDate),
                 title: '',
                 description: ''
             });
@@ -89,7 +90,7 @@ function Schedule() {
     };
 
     const getSchedulesForDate = (date) => {
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = formatLocalDate(date);
         return schedules.filter(s => s.scheduleDate === dateStr);
     };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { expenseAPI } from '../services/api';
 import { exportToExcel, formatDate } from '../utils/helpers';
 import { FiPlus, FiEdit, FiTrash2, FiX, FiDownload } from 'react-icons/fi';
+import { getCurrentLocalDate, getCurrentLocalMonth } from '../utils/dateUtils';
 import './Common.css';
 
 const CATEGORIES = ['인건비', '재료비', '임대료', '공과금', '기타'];
@@ -13,12 +14,12 @@ function Expenses() {
     const [showModal, setShowModal] = useState(false);
     const [currentExpense, setCurrentExpense] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('ALL');
-    const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+    const [selectedMonth, setSelectedMonth] = useState(getCurrentLocalMonth());
     const [formData, setFormData] = useState({
         expenseType: '고정비',
         category: '인건비',
         amount: '',
-        expenseDate: new Date().toISOString().split('T')[0],
+        expenseDate: getCurrentLocalDate(),
         description: ''
     });
 
@@ -44,7 +45,7 @@ function Expenses() {
                 expenseType: expense.expenseType || '고정비',
                 category: expense.category || '인건비',
                 amount: expense.amount || '',
-                expenseDate: expense.expenseDate || new Date().toISOString().split('T')[0],
+                expenseDate: expense.expenseDate || getCurrentLocalDate(),
                 description: expense.description || ''
             });
         } else {
@@ -53,7 +54,7 @@ function Expenses() {
                 expenseType: '고정비',
                 category: '인건비',
                 amount: '',
-                expenseDate: new Date().toISOString().split('T')[0],
+                expenseDate: getCurrentLocalDate(),
                 description: ''
             });
         }

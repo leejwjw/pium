@@ -100,14 +100,14 @@ export const scheduleAPI = {
 export const educationAPI = {
   getAll: () => api.get('/education'),
   getById: (id) => api.get(`/education/${id}`),
-  getByYearMonth: (yearMonth) => api.get(`/education/month/${yearMonth}`),
+  getByYearMonth: (yearMonth) => api.get(`/education/year-month/${yearMonth}`),
   create: (record) => api.post('/education', record),
   update: (id, record) => api.put(`/education/${id}`, record),
   delete: (id) => api.delete(`/education/${id}`),
   uploadImage: (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return api.post('/education/upload', formData, {
+    return api.post('/education/upload-image', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

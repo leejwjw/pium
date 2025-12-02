@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { paymentAPI, studentAPI } from '../services/api';
 import { FiPlus, FiX, FiDollarSign } from 'react-icons/fi';
+import { getCurrentLocalDate, getCurrentLocalMonth } from '../utils/dateUtils';
 import './Common.css';
 
 function Payments() {
@@ -8,13 +9,13 @@ function Payments() {
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+    const [selectedMonth, setSelectedMonth] = useState(getCurrentLocalMonth());
     const [activeTab, setActiveTab] = useState('ALL'); // ALL, PAID, UNPAID
     const [formData, setFormData] = useState({
         studentId: '',
-        paymentDate: new Date().toISOString().split('T')[0],
+        paymentDate: getCurrentLocalDate(),
         amount: 90000,
-        yearMonth: new Date().toISOString().slice(0, 7),
+        yearMonth: getCurrentLocalMonth(),
         status: 'PAID'
     });
 
@@ -51,7 +52,7 @@ function Payments() {
         if (student) {
             setFormData({
                 studentId: student.id,
-                paymentDate: new Date().toISOString().split('T')[0],
+                paymentDate: getCurrentLocalDate(),
                 amount: student.sessionsPerWeek === 2 ? 90000 : 250000,
                 yearMonth: selectedMonth,
                 status: 'PAID'
@@ -59,7 +60,7 @@ function Payments() {
         } else {
             setFormData({
                 studentId: '',
-                paymentDate: new Date().toISOString().split('T')[0],
+                paymentDate: getCurrentLocalDate(),
                 amount: 90000,
                 yearMonth: selectedMonth,
                 status: 'PAID'

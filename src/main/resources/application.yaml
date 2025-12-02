@@ -24,6 +24,18 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
+  # Jackson timezone configuration for Korean timezone
+  jackson:
+    time-zone: Asia/Seoul
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  # JPA timezone configuration
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          '[time_zone]': Asia/Seoul
+
 # MyBatis Configuration
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml

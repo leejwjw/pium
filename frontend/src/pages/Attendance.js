@@ -3,6 +3,7 @@ import { attendanceAPI, studentAPI } from '../services/api';
 import { FiCalendar, FiList, FiCheck, FiX } from 'react-icons/fi';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { formatLocalDate } from '../utils/dateUtils';
 import './Common.css';
 import './Attendance.css';
 
@@ -39,7 +40,7 @@ function Attendance() {
 
     const fetchAttendances = async () => {
         try {
-            const dateStr = selectedDate.toISOString().split('T')[0];
+            const dateStr = formatLocalDate(selectedDate);
             const response = await attendanceAPI.getByDate(dateStr);
             setAttendances(response.data);
         } catch (error) {
@@ -79,7 +80,7 @@ function Attendance() {
     };
 
     const getAttendanceCountForDate = (date) => {
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = formatLocalDate(date);
         const dayAttendances = monthAttendances.filter(a => a.attendanceDate === dateStr && a.isPresent);
         return dayAttendances.length;
     };
@@ -100,7 +101,7 @@ function Attendance() {
 
             const attendanceData = {
                 studentId: student.id,
-                attendanceDate: selectedDate.toISOString().split('T')[0],
+                attendanceDate: formatLocalDate(selectedDate),
                 isPresent: true,
                 progressMemo: '',
                 absenceReason: null
@@ -127,7 +128,7 @@ function Attendance() {
         try {
             const attendanceData = {
                 studentId: selectedStudent.id,
-                attendanceDate: selectedDate.toISOString().split('T')[0],
+                attendanceDate: formatLocalDate(selectedDate),
                 isPresent: false,
                 progressMemo: '',
                 absenceReason: absenceReason
@@ -211,8 +212,14 @@ function Attendance() {
                             <input
                                 type="date"
                                 className="form-control"
-                                value={selectedDate.toISOString().split('T')[0]}
-                                onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                                value={formatLocalDate(selectedDate)}
+                                onChange={(e) => {
+                                    console.log('📅 Input date selected:', e.target.value);
+                                    const newDate = new Date(e.target.value + 'T00:00:00');
+                                    console.log('📅 New date object:', newDate);
+                                    console.log('📅 Local date string:', formatLocalDate(newDate));
+                                    setSelectedDate(newDate);
+                                }}
                             />
                         </div>
                     )}
@@ -306,7 +313,12 @@ function Attendance() {
                     <div className="calendar-view">
                         <Calendar
                             onChange={(date) => {
-                                setSelectedDate(date);
+                                console.log('🗓️ Calendar date clicked (raw):', date);
+                                // 날짜를 로컬 시간대로 정규화
+                                const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+                                console.log('🗓️ Normalized date:', normalizedDate);
+                                console.log('🗓️ ISO string:', normalizedDate.toISOString().split('T')[0]);
+                                setSelectedDate(normalizedDate);
                                 setView('list');
                             }}
                             value={selectedDate}

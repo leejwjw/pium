@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { paymentAPI, expenseAPI, studentAPI } from '../services/api';
 import { exportToExcel } from '../utils/helpers';
 import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiDownload } from 'react-icons/fi';
+import { getCurrentLocalMonth } from '../utils/dateUtils';
 import './Common.css';
 
 function Finance() {
-    const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+    const [selectedMonth, setSelectedMonth] = useState(getCurrentLocalMonth());
     const [payments, setPayments] = useState([]);
     const [expenses, setExpenses] = useState([]);
     const [students, setStudents] = useState([]);

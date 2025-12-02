@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { educationAPI, subjectAPI, uploadAPI } from '../services/api';
 import { FiPlus, FiEdit, FiTrash2, FiX, FiUpload, FiSettings, FiImage } from 'react-icons/fi';
+import { getCurrentLocalMonth } from '../utils/dateUtils';
 import './Common.css';
 
 function Education() {
@@ -10,12 +11,12 @@ function Education() {
     const [showModal, setShowModal] = useState(false);
     const [showSubjectModal, setShowSubjectModal] = useState(false);
     const [currentRecord, setCurrentRecord] = useState(null);
-    const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+    const [selectedMonth, setSelectedMonth] = useState(getCurrentLocalMonth());
     const [uploadedFile, setUploadedFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [newSubject, setNewSubject] = useState({ name: '', description: '' });
     const [formData, setFormData] = useState({
-        yearMonth: new Date().toISOString().slice(0, 7),
+        yearMonth: getCurrentLocalMonth(),
         weekNumber: 1,
         subject: '',
         content: '',
@@ -386,7 +387,7 @@ function Education() {
                                         onChange={(e) => setNewSubject(prev => ({ ...prev, name: e.target.value }))}
                                     />
                                     <button className="btn btn-primary" onClick={handleAddSubject}>
-                                        <FiPlus /> 추가
+                                        추가
                                     </button>
                                 </div>
                             </div>

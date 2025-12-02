@@ -88,6 +88,7 @@ function Sidebar({ isOpen, onClose }) {
 
 function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const user = authService.getUser();
 
   return (
     <div className="app">
@@ -95,7 +96,7 @@ function AppLayout() {
         <button className="menu-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
           {isSidebarOpen ? <FiX /> : <FiMenu />}
         </button>
-        <span className="mobile-title">학원 관리</span>
+        {user && <span className="mobile-title">{user.name}</span>}
         <div style={{ width: 40 }}></div> {/* Spacer for centering */}
       </header>
 

@@ -7,6 +7,8 @@ import './Students.css';
 function Students() {
     const [students, setStudents] = useState([]);
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [statusFilter, setStatusFilter] = useState('ALL'); // 상태 필터
+    const [sessionsFilter, setSessionsFilter] = useState('ALL'); // 주당 수업 필터
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [currentStudent, setCurrentStudent] = useState(null);
@@ -188,6 +190,21 @@ function Students() {
         }
     };
 
+    // 필터링된 학생 목록
+    const filteredStudents = students.filter(student => {
+        console.log('🔍 Filtering student:', student.name, 'Status:', student.status, 'Sessions:', student.sessionsPerWeek);
+        console.log('📊 Filters - Status:', statusFilter, 'Sessions:', sessionsFilter);
+
+        const matchStatus = statusFilter === 'ALL' || student.status === statusFilter;
+        const matchSessions = sessionsFilter === 'ALL' || student.sessionsPerWeek === parseInt(sessionsFilter);
+
+        console.log('✅ Match results - Status:', matchStatus, 'Sessions:', matchSessions);
+
+        return matchStatus && matchSessions;
+    });
+
+    console.log('📋 Total students:', students.length, 'Filtered:', filteredStudents.length);
+
     if (loading) return <div className="loading">로딩중...</div>;
 
     return (
@@ -198,6 +215,39 @@ function Students() {
             </div>
 
             <div className="card">
+                {/* 필터 섹션 추가 */}
+                <div className="filter-section" style={{ marginTop: '16px' }}>
+                    <div className="filter-group">
+                        <label>상태:</label>
+                        <select
+                            className="form-control"
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="ALL">전체</option>
+                            <option value="ACTIVE">정상</option>
+                            <option value="SUSPENDED">중지</option>
+                            <option value="WITHDRAWN">퇴원</option>
+                        </select>
+                    </div>
+                    <div className="filter-group">
+                        <label>주당 수업:</label>
+                        <select
+                            className="form-control"
+                            value={sessionsFilter}
+                            onChange={(e) => setSessionsFilter(e.target.value)}
+                        >
+                            <option value="ALL">전체</option>
+                            <option value="1">주 1회</option>
+                            <option value="2">주 2회</option>
+                        </select>
+                    </div>
+                    <div className="filter-group">
+                        <span style={{ color: '#666', fontSize: '14px' }}>
+                            검색 결과: <strong>{filteredStudents.length}</strong>명
+                        </span>
+                    </div>
+                </div>
                 <div className="search-box">
                     <input
                         type="text"
@@ -233,12 +283,12 @@ function Students() {
                             </tr>
                         </thead>
                         <tbody>
-                            {students.length === 0 ? (
+                            {filteredStudents.length === 0 ? (
                                 <tr>
                                     <td colSpan="8" className="empty-state">학생 정보가 없습니다</td>
                                 </tr>
                             ) : (
-                                students.map(student => (
+                                filteredStudents.map(student => (
                                     <tr key={student.id}>
                                         <td>{student.name}</td>
                                         <td>{formatDate(student.birthDate)}</td>
