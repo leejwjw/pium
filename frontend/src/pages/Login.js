@@ -29,7 +29,7 @@ const Login = () => {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-header">
-                    <h1>🎓 학원관리</h1>
+                    <h1>🎓학원관리🎓</h1>
                     <p>관리자 로그인</p>
                 </div>
 
@@ -67,7 +67,7 @@ const Login = () => {
                 </form>
 
                 <div className="login-footer">
-                    <p>초기 계정: pium / arte</p>
+                    <p>Demo ver. 0.2</p>
                 </div>
             </div>
         </div>
