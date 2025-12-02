@@ -13,16 +13,16 @@ public interface EducationRecordMapper {
 
     void update(EducationRecord educationRecord);
 
-    void deleteById(@Param("id") Long id);
+    void deleteById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    EducationRecord findById(@Param("id") Long id);
+    EducationRecord findById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    List<EducationRecord> findAll();
+    List<EducationRecord> findAll(@Param("adminId") Long adminId);
 
-    List<EducationRecord> findByYearMonth(@Param("yearMonth") String yearMonth);
+    List<EducationRecord> findByYearMonth(@Param("yearMonth") String yearMonth, @Param("adminId") Long adminId);
 
     List<EducationRecord> findByYearMonthAndWeek(@Param("yearMonth") String yearMonth,
-            @Param("weekNumber") Integer weekNumber);
+            @Param("weekNumber") Integer weekNumber, @Param("adminId") Long adminId);
 
-    List<EducationRecord> findBySubjectContaining(@Param("subject") String subject);
+    List<EducationRecord> findBySubjectContaining(@Param("subject") String subject, @Param("adminId") Long adminId);
 }

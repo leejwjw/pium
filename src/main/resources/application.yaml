@@ -7,8 +7,8 @@ spring:
 
   # PostgreSQL Database Configuration
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/koyebdb}
-    username: ${DB_USERNAME:koyebdb}
+    url: jdbc:postgresql://ep-quiet-hat-a1j2ttpn.ap-southeast-1.pg.koyeb.app:5432/koyebdb
+    username: ${DB_USERNAME:koyeb-adm}
     password: ${DB_PASSWORD:npg_2iEOCbsTmYA9}
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -45,3 +45,8 @@ logging:
     root: INFO
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:pium-academy-secret-key-for-jwt-token-generation-and-validation-change-this-in-production}
+  expiration: 86400000  # 24시간 (밀리초)

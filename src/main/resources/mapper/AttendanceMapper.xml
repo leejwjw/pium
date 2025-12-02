@@ -6,6 +6,7 @@
 
     <resultMap id="AttendanceResultMap" type="com.admin.pium.entity.Attendance">
         <id property="id" column="id"/>
+        <result property="adminId" column="admin_id"/>
         <result property="studentId" column="student_id"/>
         <result property="attendanceDate" column="attendance_date"/>
         <result property="isPresent" column="is_present"/>
@@ -16,8 +17,8 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.admin.pium.entity.Attendance" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO attendance (student_id, attendance_date, is_present, progress_memo, absence_reason)
-        VALUES (#{studentId}, #{attendanceDate}, #{isPresent}, #{progressMemo}, #{absenceReason})
+        INSERT INTO attendance (admin_id, student_id, attendance_date, is_present, progress_memo, absence_reason)
+        VALUES (#{adminId}, #{studentId}, #{attendanceDate}, #{isPresent}, #{progressMemo}, #{absenceReason})
     </insert>
 
     <update id="update" parameterType="com.admin.pium.entity.Attendance">
@@ -28,34 +29,34 @@
             progress_memo = #{progressMemo},
             absence_reason = #{absenceReason},
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id}
+        WHERE id = #{id} AND admin_id = #{adminId}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM attendance WHERE id = #{id}
+        DELETE FROM attendance WHERE id = #{id} AND admin_id = #{adminId}
     </delete>
 
     <select id="findById" resultMap="AttendanceResultMap">
-        SELECT * FROM attendance WHERE id = #{id}
+        SELECT * FROM attendance WHERE id = #{id} AND admin_id = #{adminId}
     </select>
 
     <select id="findAll" resultMap="AttendanceResultMap">
-        SELECT * FROM attendance ORDER BY attendance_date DESC
+        SELECT * FROM attendance WHERE admin_id = #{adminId} ORDER BY attendance_date DESC
     </select>
 
     <select id="findByStudentId" resultMap="AttendanceResultMap">
-        SELECT * FROM attendance WHERE student_id = #{studentId} ORDER BY attendance_date DESC
+        SELECT * FROM attendance WHERE admin_id = #{adminId} AND student_id = #{studentId} ORDER BY attendance_date DESC
     </select>
 
     <select id="findByDateRange" resultMap="AttendanceResultMap">
         SELECT * FROM attendance 
-        WHERE attendance_date BETWEEN #{startDate} AND #{endDate}
+        WHERE admin_id = #{adminId} AND attendance_date BETWEEN #{startDate} AND #{endDate}
         ORDER BY attendance_date DESC
     </select>
 
     <select id="findByStudentIdAndDate" resultMap="AttendanceResultMap">
         SELECT * FROM attendance 
-        WHERE student_id = #{studentId} AND attendance_date = #{attendanceDate}
+        WHERE admin_id = #{adminId} AND student_id = #{studentId} AND attendance_date = #{attendanceDate}
     </select>
 
     <select id="findByDate" resultMap="AttendanceResultMap">

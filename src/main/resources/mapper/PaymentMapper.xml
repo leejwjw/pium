@@ -6,6 +6,7 @@
 
     <resultMap id="PaymentResultMap" type="com.admin.pium.entity.Payment">
         <id property="id" column="id"/>
+        <result property="adminId" column="admin_id"/>
         <result property="studentId" column="student_id"/>
         <result property="paymentDate" column="payment_date"/>
         <result property="amount" column="amount"/>
@@ -16,8 +17,8 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.admin.pium.entity.Payment" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO payments (student_id, payment_date, amount, year_month, status)
-        VALUES (#{studentId}, #{paymentDate}, #{amount}, #{yearMonth}, #{status})
+        INSERT INTO payments (admin_id, student_id, payment_date, amount, year_month, status)
+        VALUES (#{adminId}, #{studentId}, #{paymentDate}, #{amount}, #{yearMonth}, #{status})
     </insert>
 
     <update id="update" parameterType="com.admin.pium.entity.Payment">
@@ -28,37 +29,37 @@
             year_month = #{yearMonth},
             status = #{status},
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id}
+        WHERE id = #{id} AND admin_id = #{adminId}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM payments WHERE id = #{id}
+        DELETE FROM payments WHERE id = #{id} AND admin_id = #{adminId}
     </delete>
 
     <select id="findById" resultMap="PaymentResultMap">
-        SELECT * FROM payments WHERE id = #{id}
+        SELECT * FROM payments WHERE id = #{id} AND admin_id = #{adminId}
     </select>
 
     <select id="findAll" resultMap="PaymentResultMap">
-        SELECT * FROM payments ORDER BY payment_date DESC
+        SELECT * FROM payments WHERE admin_id = #{adminId} ORDER BY payment_date DESC
     </select>
 
     <select id="findByStudentId" resultMap="PaymentResultMap">
-        SELECT * FROM payments WHERE student_id = #{studentId} ORDER BY payment_date DESC
+        SELECT * FROM payments WHERE admin_id = #{adminId} AND student_id = #{studentId} ORDER BY payment_date DESC
     </select>
 
     <select id="findByYearMonth" resultMap="PaymentResultMap">
-        SELECT * FROM payments WHERE year_month = #{yearMonth} ORDER BY payment_date DESC
+        SELECT * FROM payments WHERE admin_id = #{adminId} AND year_month = #{yearMonth} ORDER BY payment_date DESC
     </select>
 
     <select id="findByDateRange" resultMap="PaymentResultMap">
         SELECT * FROM payments 
-        WHERE payment_date BETWEEN #{startDate} AND #{endDate}
+        WHERE admin_id = #{adminId} AND payment_date BETWEEN #{startDate} AND #{endDate}
         ORDER BY payment_date DESC
     </select>
 
     <select id="sumByYearMonth" resultType="java.lang.Integer">
-        SELECT COALESCE(SUM(amount), 0) FROM payments WHERE year_month = #{yearMonth}
+        SELECT COALESCE(SUM(amount), 0) FROM payments WHERE admin_id = #{adminId} AND year_month = #{yearMonth}
     </select>
 
 </mapper>

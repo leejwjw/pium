@@ -6,6 +6,7 @@
 
     <resultMap id="EducationRecordResultMap" type="com.admin.pium.entity.EducationRecord">
         <id property="id" column="id"/>
+        <result property="adminId" column="admin_id"/>
         <result property="yearMonth" column="year_month"/>
         <result property="weekNumber" column="week_number"/>
         <result property="subject" column="subject"/>
@@ -16,8 +17,8 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.admin.pium.entity.EducationRecord" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO education_records (year_month, week_number, subject, content, image_path)
-        VALUES (#{yearMonth}, #{weekNumber}, #{subject}, #{content}, #{imagePath})
+        INSERT INTO education_records (admin_id, year_month, week_number, subject, content, image_path)
+        VALUES (#{adminId}, #{yearMonth}, #{weekNumber}, #{subject}, #{content}, #{imagePath})
     </insert>
 
     <update id="update" parameterType="com.admin.pium.entity.EducationRecord">
@@ -28,29 +29,33 @@
             content = #{content},
             image_path = #{imagePath},
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id}
+        WHERE id = #{id} AND admin_id = #{adminId}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM education_records WHERE id = #{id}
+        DELETE FROM education_records WHERE id = #{id} AND admin_id = #{adminId}
     </delete>
 
     <select id="findById" resultMap="EducationRecordResultMap">
-        SELECT * FROM education_records WHERE id = #{id}
+        SELECT * FROM education_records WHERE id = #{id} AND admin_id = #{adminId}
     </select>
 
     <select id="findAll" resultMap="EducationRecordResultMap">
-        SELECT * FROM education_records ORDER BY year_month DESC, week_number
+        SELECT * FROM education_records WHERE admin_id = #{adminId} ORDER BY year_month DESC, week_number
+    </select>
+
+    <select id="findByYearMonth" resultMap="EducationRecordResultMap">
+        SELECT * FROM education_records WHERE admin_id = #{adminId} AND year_month = #{yearMonth} ORDER BY week_number
     </select>
     <select id="findByYearMonthAndWeek" resultMap="EducationRecordResultMap">
         SELECT * FROM education_records
-        WHERE year_month = #{yearMonth} AND week_number = #{weekNumber}
+        WHERE admin_id = #{adminId} AND year_month = #{yearMonth} AND week_number = #{weekNumber}
         ORDER BY created_at DESC
     </select>
 
     <select id="findBySubjectContaining" resultMap="EducationRecordResultMap">
         SELECT * FROM education_records
-        WHERE subject LIKE CONCAT('%', #{subject}, '%')
+        WHERE admin_id = #{adminId} AND subject LIKE CONCAT('%', #{subject}, '%')
         ORDER BY created_at DESC
     </select>
 </mapper>

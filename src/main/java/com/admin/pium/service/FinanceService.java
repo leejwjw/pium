@@ -5,6 +5,7 @@ import com.admin.pium.entity.Expense;
 import com.admin.pium.entity.Payment;
 import com.admin.pium.mapper.ExpenseMapper;
 import com.admin.pium.mapper.PaymentMapper;
+import com.admin.pium.security.AdminContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,20 +24,23 @@ public class FinanceService {
 
     private final PaymentMapper paymentMapper;
     private final ExpenseMapper expenseMapper;
+    private final AdminContext adminContext;
 
     public FinanceSummaryDTO getMonthlySummary(String yearMonth) {
+        Long adminId = adminContext.getCurrentAdminId();
+
         // Calculate date range for the month
         YearMonth ym = YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
         LocalDate startDate = ym.atDay(1);
         LocalDate endDate = ym.atEndOfMonth();
 
         // Get total income (payments)
-        Integer totalIncome = paymentMapper.sumByYearMonth(yearMonth);
+        Integer totalIncome = paymentMapper.sumByYearMonth(yearMonth, adminId);
         if (totalIncome == null)
             totalIncome = 0;
 
         // Get total expenses
-        Integer totalExpense = expenseMapper.sumByDateRange(startDate, endDate);
+        Integer totalExpense = expenseMapper.sumByDateRange(startDate, endDate, adminId);
         if (totalExpense == null)
             totalExpense = 0;
 
@@ -44,7 +48,7 @@ public class FinanceService {
         Integer netProfit = totalIncome - totalExpense;
 
         // Get payment counts
-        List<Payment> payments = paymentMapper.findByYearMonth(yearMonth);
+        List<Payment> payments = paymentMapper.findByYearMonth(yearMonth, adminId);
         Integer totalPaid = (int) payments.stream().filter(p -> "PAID".equals(p.getStatus())).count();
         Integer totalPending = (int) payments.stream().filter(p -> "PENDING".equals(p.getStatus())).count();
 
@@ -52,6 +56,7 @@ public class FinanceService {
     }
 
     public byte[] generateExcelReport(String yearMonth) throws IOException {
+        Long adminId = adminContext.getCurrentAdminId();
         YearMonth ym = YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
         LocalDate startDate = ym.atDay(1);
         LocalDate endDate = ym.atEndOfMonth();
@@ -64,11 +69,11 @@ public class FinanceService {
 
         // Create payments sheet
         Sheet paymentsSheet = workbook.createSheet("결제내역");
-        createPaymentsSheet(paymentsSheet, yearMonth);
+        createPaymentsSheet(paymentsSheet, yearMonth, adminId);
 
         // Create expenses sheet
         Sheet expensesSheet = workbook.createSheet("지출내역");
-        createExpensesSheet(expensesSheet, startDate, endDate);
+        createExpensesSheet(expensesSheet, startDate, endDate, adminId);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         workbook.write(outputStream);
@@ -101,8 +106,8 @@ public class FinanceService {
         sheet.autoSizeColumn(1);
     }
 
-    private void createPaymentsSheet(Sheet sheet, String yearMonth) {
-        List<Payment> payments = paymentMapper.findByYearMonth(yearMonth);
+    private void createPaymentsSheet(Sheet sheet, String yearMonth, Long adminId) {
+        List<Payment> payments = paymentMapper.findByYearMonth(yearMonth, adminId);
 
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("결제일");
@@ -124,8 +129,8 @@ public class FinanceService {
         }
     }
 
-    private void createExpensesSheet(Sheet sheet, LocalDate startDate, LocalDate endDate) {
-        List<Expense> expenses = expenseMapper.findByDateRange(startDate, endDate);
+    private void createExpensesSheet(Sheet sheet, LocalDate startDate, LocalDate endDate, Long adminId) {
+        List<Expense> expenses = expenseMapper.findByDateRange(startDate, endDate, adminId);
 
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("지출일");

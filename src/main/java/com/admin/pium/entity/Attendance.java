@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class Attendance {
 
     private Long id;
+    private Long adminId;
     private Long studentId;
     private LocalDate attendanceDate;
     private Boolean isPresent = true;

@@ -14,17 +14,19 @@ public interface PaymentMapper {
 
     void update(Payment payment);
 
-    void deleteById(@Param("id") Long id);
+    void deleteById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    Payment findById(@Param("id") Long id);
+    Payment findById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    List<Payment> findAll();
+    List<Payment> findAll(@Param("adminId") Long adminId);
 
-    List<Payment> findByStudentId(@Param("studentId") Long studentId);
+    List<Payment> findByStudentId(@Param("studentId") Long studentId, @Param("adminId") Long adminId);
 
-    List<Payment> findByYearMonth(@Param("yearMonth") String yearMonth);
+    List<Payment> findByYearMonth(@Param("yearMonth") String yearMonth, @Param("adminId") Long adminId);
 
-    List<Payment> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<Payment> findByDateRange(@Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("adminId") Long adminId);
 
-    Integer sumByYearMonth(@Param("yearMonth") String yearMonth);
+    Integer sumByYearMonth(@Param("yearMonth") String yearMonth, @Param("adminId") Long adminId);
 }

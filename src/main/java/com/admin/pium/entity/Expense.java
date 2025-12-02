@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class Expense {
 
     private Long id;
+    private Long adminId; // 관리자 ID
     private String expenseType;
     private String category; // 품목 분류 (인건비, 재료비, 임대료 등)
     private Integer amount;

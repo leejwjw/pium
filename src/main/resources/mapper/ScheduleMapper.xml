@@ -6,6 +6,7 @@
 
     <resultMap id="ScheduleResultMap" type="com.admin.pium.entity.Schedule">
         <id property="id" column="id"/>
+        <result property="adminId" column="admin_id"/>
         <result property="scheduleDate" column="schedule_date"/>
         <result property="title" column="title"/>
         <result property="description" column="description"/>
@@ -14,8 +15,8 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.admin.pium.entity.Schedule" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO schedules (schedule_date, title, description)
-        VALUES (#{scheduleDate}, #{title}, #{description})
+        INSERT INTO schedules (admin_id, schedule_date, title, description)
+        VALUES (#{adminId}, #{scheduleDate}, #{title}, #{description})
     </insert>
 
     <update id="update" parameterType="com.admin.pium.entity.Schedule">
@@ -24,28 +25,28 @@
             title = #{title},
             description = #{description},
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id}
+        WHERE id = #{id} AND admin_id = #{adminId}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM schedules WHERE id = #{id}
+        DELETE FROM schedules WHERE id = #{id} AND admin_id = #{adminId}
     </delete>
 
     <select id="findById" resultMap="ScheduleResultMap">
-        SELECT * FROM schedules WHERE id = #{id}
+        SELECT * FROM schedules WHERE id = #{id} AND admin_id = #{adminId}
     </select>
 
     <select id="findAll" resultMap="ScheduleResultMap">
-        SELECT * FROM schedules ORDER BY schedule_date DESC
+        SELECT * FROM schedules WHERE admin_id = #{adminId} ORDER BY schedule_date DESC
     </select>
 
     <select id="findByScheduleDate" resultMap="ScheduleResultMap">
-        SELECT * FROM schedules WHERE schedule_date = #{scheduleDate} ORDER BY created_at
+        SELECT * FROM schedules WHERE admin_id = #{adminId} AND schedule_date = #{scheduleDate} ORDER BY created_at
     </select>
 
     <select id="findByDateRange" resultMap="ScheduleResultMap">
         SELECT * FROM schedules 
-        WHERE schedule_date BETWEEN #{startDate} AND #{endDate}
+        WHERE admin_id = #{adminId} AND schedule_date BETWEEN #{startDate} AND #{endDate}
         ORDER BY schedule_date
     </select>
 

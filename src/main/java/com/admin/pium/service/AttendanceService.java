@@ -5,6 +5,7 @@ import com.admin.pium.entity.Attendance;
 import com.admin.pium.entity.Student;
 import com.admin.pium.mapper.AttendanceMapper;
 import com.admin.pium.mapper.StudentMapper;
+import com.admin.pium.security.AdminContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,32 +21,39 @@ public class AttendanceService {
 
     private final AttendanceMapper attendanceMapper;
     private final StudentMapper studentMapper;
+    private final AdminContext adminContext;
 
     public List<AttendanceDTO> getAllAttendance() {
-        return attendanceMapper.findAll().stream()
+        Long adminId = adminContext.getCurrentAdminId();
+        return attendanceMapper.findAll(adminId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<AttendanceDTO> getAttendanceByDate(LocalDate date) {
-        return attendanceMapper.findByDateRange(date, date).stream()
+        Long adminId = adminContext.getCurrentAdminId();
+        return attendanceMapper.findByDateRange(date, date, adminId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<AttendanceDTO> getAttendanceByDateRange(LocalDate startDate, LocalDate endDate) {
-        return attendanceMapper.findByDateRange(startDate, endDate).stream()
+        Long adminId = adminContext.getCurrentAdminId();
+        return attendanceMapper.findByDateRange(startDate, endDate, adminId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<AttendanceDTO> getRecentAttendanceByStudent(Long studentId) {
-        return attendanceMapper.findByStudentId(studentId).stream()
+        Long adminId = adminContext.getCurrentAdminId();
+        return attendanceMapper.findByStudentId(studentId, adminId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public Attendance createOrUpdateAttendance(Attendance attendance) {
+        Long adminId = adminContext.getCurrentAdminId();
+        attendance.setAdminId(adminId);
         if (attendance.getId() == null) {
             attendanceMapper.insert(attendance);
         } else {
@@ -55,10 +63,12 @@ public class AttendanceService {
     }
 
     public void deleteAttendance(Long id) {
-        attendanceMapper.deleteById(id);
+        Long adminId = adminContext.getCurrentAdminId();
+        attendanceMapper.deleteById(id, adminId);
     }
 
     private AttendanceDTO convertToDTO(Attendance attendance) {
+        Long adminId = adminContext.getCurrentAdminId();
         AttendanceDTO dto = new AttendanceDTO();
         dto.setId(attendance.getId());
         dto.setStudentId(attendance.getStudentId());
@@ -66,8 +76,8 @@ public class AttendanceService {
         dto.setIsPresent(attendance.getIsPresent());
         dto.setProgressMemo(attendance.getProgressMemo());
 
-        // Get student name
-        Student student = studentMapper.findById(attendance.getStudentId());
+        // Get student name - use adminId to ensure we only access our own students
+        Student student = studentMapper.findById(attendance.getStudentId(), adminId);
         if (student != null) {
             dto.setStudentName(student.getName());
         }

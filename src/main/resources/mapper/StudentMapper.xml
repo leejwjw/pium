@@ -6,6 +6,7 @@
 
     <resultMap id="StudentResultMap" type="com.admin.pium.entity.Student">
         <id property="id" column="id"/>
+        <result property="adminId" column="admin_id"/>
         <result property="name" column="name"/>
         <result property="birthDate" column="birth_date"/>
         <result property="school" column="school"/>
@@ -24,8 +25,8 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.admin.pium.entity.Student" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO students (name, birth_date, school, special_notes, mon, tue, wed, thu, fri, parent_contact, student_contact, status, sessions_per_week)
-        VALUES (#{name}, #{birthDate}, #{school}, #{specialNotes}, #{mon}, #{tue}, #{wed}, #{thu}, #{fri}, #{parentContact}, #{studentContact}, #{status}, #{sessionsPerWeek})
+        INSERT INTO students (admin_id, name, birth_date, school, special_notes, mon, tue, wed, thu, fri, parent_contact, student_contact, status, sessions_per_week)
+        VALUES (#{adminId}, #{name}, #{birthDate}, #{school}, #{specialNotes}, #{mon}, #{tue}, #{wed}, #{thu}, #{fri}, #{parentContact}, #{studentContact}, #{status}, #{sessionsPerWeek})
     </insert>
 
     <update id="update" parameterType="com.admin.pium.entity.Student">
@@ -44,31 +45,31 @@
             status = #{status},
             sessions_per_week = #{sessionsPerWeek},
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id}
+        WHERE id = #{id} AND admin_id = #{adminId}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM students WHERE id = #{id}
+        DELETE FROM students WHERE id = #{id} AND admin_id = #{adminId}
     </delete>
 
     <select id="findById" resultMap="StudentResultMap">
-        SELECT * FROM students WHERE id = #{id}
+        SELECT * FROM students WHERE id = #{id} AND admin_id = #{adminId}
     </select>
 
     <select id="findAll" resultMap="StudentResultMap">
-        SELECT * FROM students WHERE status = 'ACTIVE' ORDER BY created_at DESC
+        SELECT * FROM students WHERE admin_id = #{adminId} AND status = 'ACTIVE' ORDER BY created_at DESC
     </select>
 
     <select id="findAllActive" resultMap="StudentResultMap">
-        SELECT * FROM students WHERE status = 'ACTIVE' ORDER BY created_at DESC
+        SELECT * FROM students WHERE admin_id = #{adminId} AND status = 'ACTIVE' ORDER BY created_at DESC
     </select>
 
     <select id="searchByName" resultMap="StudentResultMap">
-        SELECT * FROM students WHERE name LIKE CONCAT('%', #{name}, '%') ORDER BY name
+        SELECT * FROM students WHERE admin_id = #{adminId} AND name LIKE CONCAT('%', #{name}, '%') ORDER BY name
     </select>
 
     <select id="searchBySchool" resultMap="StudentResultMap">
-        SELECT * FROM students WHERE school LIKE CONCAT('%', #{school}, '%') ORDER BY school
+        SELECT * FROM students WHERE admin_id = #{adminId} AND school LIKE CONCAT('%', #{school}, '%') ORDER BY school
     </select>
 
 </mapper>

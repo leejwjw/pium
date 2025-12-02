@@ -6,6 +6,7 @@
 
     <resultMap id="ExpenseResultMap" type="com.admin.pium.entity.Expense">
         <id property="id" column="id"/>
+        <result property="adminId" column="admin_id"/>
         <result property="expenseType" column="expense_type"/>
         <result property="category" column="category"/>
         <result property="amount" column="amount"/>
@@ -16,8 +17,8 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.admin.pium.entity.Expense" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO expenses (expense_type, category, amount, expense_date, description)
-        VALUES (#{expenseType}, #{category}, #{amount}, #{expenseDate}, #{description})
+        INSERT INTO expenses (admin_id, expense_type, category, amount, expense_date, description)
+        VALUES (#{adminId}, #{expenseType}, #{category}, #{amount}, #{expenseDate}, #{description})
     </insert>
 
     <update id="update" parameterType="com.admin.pium.entity.Expense">
@@ -28,40 +29,48 @@
             expense_date = #{expenseDate},
             description = #{description},
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id}
+        WHERE id = #{id} AND admin_id = #{adminId}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM expenses WHERE id = #{id}
+        DELETE FROM expenses WHERE id = #{id} AND admin_id = #{adminId}
     </delete>
 
     <select id="findById" resultMap="ExpenseResultMap">
-        SELECT * FROM expenses WHERE id = #{id}
+        SELECT * FROM expenses WHERE id = #{id} AND admin_id = #{adminId}
     </select>
 
     <select id="findAll" resultMap="ExpenseResultMap">
-        SELECT * FROM expenses ORDER BY expense_date DESC
+        SELECT * FROM expenses WHERE admin_id = #{adminId} ORDER BY expense_date DESC
     </select>
 
     <select id="findByExpenseType" resultMap="ExpenseResultMap">
-        SELECT * FROM expenses WHERE expense_type = #{expenseType} ORDER BY expense_date DESC
+        SELECT * FROM expenses WHERE admin_id = #{adminId} AND expense_type = #{expenseType} ORDER BY expense_date DESC
     </select>
 
     <select id="sumByDateRange" resultType="java.lang.Integer">
         SELECT SUM(amount)
         FROM expenses
-        WHERE expense_date BETWEEN #{startDate} AND #{endDate}
+        WHERE admin_id = #{adminId} AND expense_date BETWEEN #{startDate} AND #{endDate}
     </select>
 
     <select id="searchByKeyword" resultMap="ExpenseResultMap">
         SELECT * FROM expenses
-        WHERE description LIKE CONCAT('%', #{keyword}, '%')
+        WHERE admin_id = #{adminId} AND (
+           description LIKE CONCAT('%', #{keyword}, '%')
            OR expense_type LIKE CONCAT('%', #{keyword}, '%')
            OR category LIKE CONCAT('%', #{keyword}, '%')
+        )
         ORDER BY expense_date DESC
     </select>
 
     <select id="findByCategory" resultMap="ExpenseResultMap">
-        SELECT * FROM expenses WHERE category = #{category} ORDER BY expense_date DESC
+        SELECT * FROM expenses WHERE admin_id = #{adminId} AND category = #{category} ORDER BY expense_date DESC
+    </select>
+
+    <select id="findByDateRange" resultMap="ExpenseResultMap">
+        SELECT * FROM expenses 
+        WHERE admin_id = #{adminId} AND expense_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY expense_date DESC
     </select>
 </mapper>

@@ -124,6 +124,7 @@
     padding: 16px;
     background: #f9f9f9;
     border-radius: 8px;
+    flex-wrap: wrap;
 }
 
 .legend-item {
@@ -170,4 +171,47 @@
 /* 다른 월의 날짜 */
 .react-calendar__month-view__days__day--neighboringMonth {
     color: #ccc;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .calendar-view {
+        padding: 10px;
+    }
+
+    .react-calendar {
+        padding: 10px;
+    }
+
+    .react-calendar__tile {
+        min-height: 50px;
+        padding: 8px 2px;
+        font-size: 12px;
+    }
+
+    .calendar-tile-content {
+        font-size: 10px;
+        margin-top: 2px;
+    }
+
+    .all-attended,
+    .partial-attended,
+    .none-attended {
+        padding: 1px 4px;
+        font-size: 10px;
+    }
+
+    .calendar-legend {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .legend-item {
+        font-size: 12px;
+    }
+
+    .legend-color {
+        width: 16px;
+        height: 16px;
+    }
 }

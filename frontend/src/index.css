@@ -2,15 +2,22 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* Ensure padding doesn't affect width */
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  margin: 0;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f5f5;
+  color: #333;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll on body */
+  font-size: 16px;
+  /* Base font size for mobile */
 }
 
 code {
@@ -23,6 +30,7 @@ code {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
+  width: 100%;
 }
 
 .page-header {
@@ -34,7 +42,8 @@ code {
 }
 
 .page-header h1 {
-  font-size: 28px;
+  font-size: 24px;
+  /* Slightly smaller for mobile */
   color: #333;
   margin-bottom: 8px;
 }
@@ -47,9 +56,10 @@ code {
 .card {
   background: white;
   border-radius: 8px;
-  padding: 24px;
+  padding: 20px;
+  /* Reduced padding */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .btn {
@@ -60,6 +70,11 @@ code {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  min-height: 44px;
+  /* Touch target size */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
@@ -98,23 +113,33 @@ code {
   background: #2e7d32;
 }
 
+/* Responsive Table */
 .table-container {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px;
+  /* Ensure table doesn't squash too much */
 }
 
 thead {
   background: #f5f5f5;
 }
 
-th, td {
+th,
+td {
   padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
+  white-space: nowrap;
+  /* Prevent text wrapping in tight spaces */
 }
 
 th {
@@ -138,7 +163,7 @@ tbody tr:hover {
 
 .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 500;
   color: #333;
   font-size: 14px;
@@ -146,10 +171,12 @@ tbody tr:hover {
 
 .form-control {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px;
+  /* Larger touch area */
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
+  /* Prevent zoom on iOS */
   transition: border-color 0.2s;
 }
 
@@ -162,12 +189,127 @@ tbody tr:hover {
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
+  /* Allow wrapping on mobile */
 }
 
 .search-box input {
   flex: 1;
+  min-width: 200px;
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+    /* Smaller base font */
+  }
+
+  .container {
+    padding: 10px;
+    /* Reduced container padding */
+  }
+
+  .page-header {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 20px;
+  }
+
+  .card {
+    padding: 16px;
+    /* Reduced card padding */
+    margin-bottom: 16px;
+  }
+
+  /* Compact Table Styles for Mobile */
+  th,
+  td {
+    padding: 8px 10px;
+    /* Tighter table spacing */
+    font-size: 13px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    height: 36px;
+    /* Smaller buttons */
+    min-height: 36px;
+  }
+
+  .form-control {
+    padding: 8px 10px;
+    font-size: 14px;
+    height: 40px;
+  }
+
+  .search-box {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .search-box input {
+    min-width: 100%;
+    /* Full width search on mobile */
+  }
+
+  /* Modal Mobile Optimization */
+  .modal-overlay {
+    padding: 10px;
+    align-items: flex-end;
+    /* Bottom sheet style on very small screens? or just center */
+  }
+
+  .modal-content {
+    max-height: 85vh;
+    padding: 0;
+    /* Let children handle padding */
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .modal-footer {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .status-badge {
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 8px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  th,
+  td {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}
+
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -179,6 +321,7 @@ tbody tr:hover {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 20px;
 }
 
 .modal-content {
@@ -186,9 +329,10 @@ tbody tr:hover {
   border-radius: 8px;
   padding: 24px;
   max-width: 600px;
-  width: 90%;
+  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
 }
 
 .modal-header {
@@ -209,6 +353,8 @@ tbody tr:hover {
   font-size: 24px;
   cursor: pointer;
   color: #666;
+  padding: 8px;
+  /* Touch target */
 }
 
 .modal-footer {
@@ -218,6 +364,26 @@ tbody tr:hover {
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+}
+
+.modal-footer button {
+  flex: 1;
+  /* Full width buttons on mobile */
+}
+
+@media (min-width: 768px) {
+  .modal-footer button {
+    flex: initial;
+  }
+
+  .search-box {
+    flex-wrap: nowrap;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
 }
 
 .loading {
@@ -289,6 +455,7 @@ tbody tr:hover {
   font-size: 12px;
   cursor: pointer;
   transition: opacity 0.2s;
+  min-height: 32px;
 }
 
 .action-btn:hover {

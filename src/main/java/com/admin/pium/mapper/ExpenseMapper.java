@@ -14,17 +14,19 @@ public interface ExpenseMapper {
 
     void update(Expense expense);
 
-    void deleteById(@Param("id") Long id);
+    void deleteById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    Expense findById(@Param("id") Long id);
+    Expense findById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    List<Expense> findAll();
+    List<Expense> findAll(@Param("adminId") Long adminId);
 
-    List<Expense> findByExpenseType(@Param("expenseType") String expenseType);
+    List<Expense> findByExpenseType(@Param("expenseType") String expenseType, @Param("adminId") Long adminId);
 
-    List<Expense> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<Expense> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+            @Param("adminId") Long adminId);
 
-    Integer sumByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    Integer sumByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+            @Param("adminId") Long adminId);
 
-    List<Expense> searchByKeyword(@Param("keyword") String keyword);
+    List<Expense> searchByKeyword(@Param("keyword") String keyword, @Param("adminId") Long adminId);
 }

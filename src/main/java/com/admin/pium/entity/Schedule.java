@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class Schedule {
 
     private Long id;
+    private Long adminId; // 관리자 ID
     private String scheduleDate;
     private String title;
     private String description;

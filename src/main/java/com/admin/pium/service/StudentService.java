@@ -5,6 +5,7 @@ import com.admin.pium.entity.Payment;
 import com.admin.pium.entity.Student;
 import com.admin.pium.mapper.PaymentMapper;
 import com.admin.pium.mapper.StudentMapper;
+import com.admin.pium.security.AdminContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,21 +20,26 @@ public class StudentService {
 
     private final StudentMapper studentMapper;
     private final PaymentMapper paymentMapper;
+    private final AdminContext adminContext;
 
     public List<Student> getAllStudents() {
-        return studentMapper.findAll();
+        Long adminId = adminContext.getCurrentAdminId();
+        return studentMapper.findAll(adminId);
     }
 
     public List<Student> getAllActiveStudents() {
-        return studentMapper.findAllActive();
+        Long adminId = adminContext.getCurrentAdminId();
+        return studentMapper.findAllActive(adminId);
     }
 
     public long getActiveStudentCount() {
-        return studentMapper.findAllActive().size();
+        Long adminId = adminContext.getCurrentAdminId();
+        return studentMapper.findAllActive(adminId).size();
     }
 
     public Student getStudentById(Long id) {
-        Student student = studentMapper.findById(id);
+        Long adminId = adminContext.getCurrentAdminId();
+        Student student = studentMapper.findById(id, adminId);
         if (student == null) {
             throw new RuntimeException("Student not found with id: " + id);
         }
@@ -41,6 +47,8 @@ public class StudentService {
     }
 
     public Student createStudent(Student student) {
+        Long adminId = adminContext.getCurrentAdminId();
+        student.setAdminId(adminId);
         studentMapper.insert(student);
         return student;
     }
@@ -65,15 +73,18 @@ public class StudentService {
     }
 
     public void deleteStudent(Long id) {
-        studentMapper.deleteById(id);
+        Long adminId = adminContext.getCurrentAdminId();
+        studentMapper.deleteById(id, adminId);
     }
 
     public List<Student> searchStudents(String keyword) {
-        return studentMapper.searchByName(keyword);
+        Long adminId = adminContext.getCurrentAdminId();
+        return studentMapper.searchByName(keyword, adminId);
     }
 
     public List<StudentDTO> getStudentsWithPaymentStatus(String yearMonth) {
-        List<Student> students = studentMapper.findAll();
+        Long adminId = adminContext.getCurrentAdminId();
+        List<Student> students = studentMapper.findAll(adminId);
         return students.stream().map(student -> {
             StudentDTO dto = new StudentDTO();
             dto.setId(student.getId());
@@ -90,7 +101,7 @@ public class StudentService {
             dto.setStudentContact(student.getStudentContact());
 
             // Check payment status for the month
-            List<Payment> payments = paymentMapper.findByYearMonth(yearMonth).stream()
+            List<Payment> payments = paymentMapper.findByYearMonth(yearMonth, adminId).stream()
                     .filter(p -> p.getStudentId().equals(student.getId()))
                     .collect(Collectors.toList());
             boolean hasPaid = payments.stream().anyMatch(p -> "PAID".equals(p.getStatus()));

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class Payment {
 
     private Long id;
+    private Long adminId;
     private Long studentId;
     private LocalDate paymentDate;
     private Integer amount;

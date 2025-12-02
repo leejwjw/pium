@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class EducationRecord {
 
     private Long id;
+    private Long adminId; // 관리자 ID
     private String yearMonth; // Format: YYYY-MM
     private Integer weekNumber; // 1-5
     private String subject;

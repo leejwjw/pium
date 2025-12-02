@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class Student {
 
     private Long id;
+    private Long adminId; // 관리자 ID
     private String name;
     private String birthDate;
     private String school;

@@ -123,7 +123,7 @@ function Schedule() {
                     </button>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'start' }}>
+                <div className="responsive-two-column">
                     <div className="calendar-view">
                         <Calendar
                             onChange={(date) => setSelectedDate(date)}

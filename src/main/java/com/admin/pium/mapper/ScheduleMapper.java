@@ -14,13 +14,14 @@ public interface ScheduleMapper {
 
     void update(Schedule schedule);
 
-    void deleteById(@Param("id") Long id);
+    void deleteById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    Schedule findById(@Param("id") Long id);
+    Schedule findById(@Param("id") Long id, @Param("adminId") Long adminId);
 
-    List<Schedule> findAll();
+    List<Schedule> findAll(@Param("adminId") Long adminId);
 
-    List<Schedule> findByScheduleDate(@Param("scheduleDate") String scheduleDate);
+    List<Schedule> findByScheduleDate(@Param("scheduleDate") String scheduleDate, @Param("adminId") Long adminId);
 
-    List<Schedule> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<Schedule> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,
+            @Param("adminId") Long adminId);
 }
