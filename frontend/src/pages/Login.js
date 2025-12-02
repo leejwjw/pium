@@ -29,7 +29,7 @@ const Login = () => {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-header">
-                    <h1>🎓 Pium Academy</h1>
+                    <h1>🎓 학원관리</h1>
                     <p>관리자 로그인</p>
                 </div>
 
