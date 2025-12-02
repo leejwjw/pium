@@ -12,7 +12,7 @@
   left: 0;
   right: 0;
   height: 60px;
-  background: #4E342E;
+  background: #4e342E;
   /* Dark Brown */
   color: white;
   z-index: 100;
@@ -42,7 +42,7 @@
 /* Sidebar Styles */
 .sidebar {
   width: 260px;
-  background: #4E342E;
+  background: #4e342E;
   /* Dark Brown */
   color: white;
   position: fixed;
