@@ -38,12 +38,11 @@ const authService = {
         return !!authService.getToken();
     },
 
-    changePassword: async (currentPassword, newPassword) => {
-        const token = authService.getToken();
+    changePassword: async (username, currentPassword, newPassword) => {
         const response = await axios.post(
             `${API_BASE_URL}/auth/change-password`,
-            { currentPassword, newPassword },
-            { headers: { Authorization: `Bearer ${token}` } }
+            { username, currentPassword, newPassword }
+            // JWT 토큰 없이 호출
         );
         return response.data;
     }

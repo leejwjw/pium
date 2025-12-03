@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
 import '../styles/Login.css';
 
@@ -67,6 +67,9 @@ const Login = () => {
                 </form>
 
                 <div className="login-footer">
+                    <Link to="/change-password" className="change-password-link">
+                        비밀번호 변경
+                    </Link>
                     <p>Demo ver. 0.2</p>
                 </div>
             </div>

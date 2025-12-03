@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation 
 import { FiHome, FiUsers, FiCheckSquare, FiDollarSign, FiTrendingDown, FiPieChart, FiCalendar, FiBookOpen, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
 import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
+import ChangePassword from './pages/ChangePassword';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import Attendance from './pages/Attendance';
@@ -123,6 +124,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route
           path="/*"
           element={
@@ -137,3 +139,4 @@ function App() {
 }
 
 export default App;
+

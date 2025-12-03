@@ -59,11 +59,11 @@
     border-radius: 8px;
     transition: all 0.2s;
     position: relative;
-    min-height: 70px;
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .react-calendar__tile:enabled:hover {
@@ -93,6 +93,42 @@
     margin-top: 4px;
     font-size: 12px;
     font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.student-names {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.student-name {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+
+.student-name.attended {
+    color: #2e7d32;
+    background-color: #c8e6c9;
+    font-weight: 600;
+}
+
+.student-name.not-attended {
+    color: #555;
+    background-color: #f5f5f5;
 }
 
 .all-attended {
@@ -163,14 +199,26 @@
     font-size: 13px;
 }
 
-/* 주말 스타일 */
+/* 주말 스타일 - 기본 빨간색 제거 */
 .react-calendar__month-view__days__day--weekend {
-    color: #d32f2f;
+    color: inherit;
+}
+
+/* 토요일 파란색 */
+.saturday-tile,
+.saturday-tile abbr {
+    color: #1976d2 !important;
+}
+
+/* 일요일 빨간색 */
+.sunday-tile,
+.sunday-tile abbr {
+    color: #d32f2f !important;
 }
 
 /* 다른 월의 날짜 */
 .react-calendar__month-view__days__day--neighboringMonth {
-    color: #ccc;
+    color: #ccc !important;
 }
 
 /* Mobile Responsive Styles */
@@ -184,7 +232,7 @@
     }
 
     .react-calendar__tile {
-        min-height: 50px;
+        min-height: 80px;
         padding: 8px 2px;
         font-size: 12px;
     }
@@ -192,6 +240,11 @@
     .calendar-tile-content {
         font-size: 10px;
         margin-top: 2px;
+    }
+
+    .student-name {
+        font-size: 9px;
+        padding: 1px 4px;
     }
 
     .all-attended,

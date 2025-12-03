@@ -123,11 +123,27 @@
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .login-footer p {
   font-size: 13px;
   color: #718096;
+}
+
+.change-password-link {
+  font-size: 14px;
+  color: #D87D4A;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.change-password-link:hover {
+  color: #8D6E63;
+  text-decoration: underline;
 }
 
 @media (max-width: 480px) {

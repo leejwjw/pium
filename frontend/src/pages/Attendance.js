@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { attendanceAPI, studentAPI } from '../services/api';
-import { FiCalendar, FiList, FiCheck, FiX } from 'react-icons/fi';
+import { FiCalendar, FiList, FiCheck, FiX, FiDownload } from 'react-icons/fi';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { formatLocalDate } from '../utils/dateUtils';
+import * as XLSX from 'xlsx';
 import './Common.css';
 import './Attendance.css';
 
@@ -148,17 +149,146 @@ function Attendance() {
         }
     };
 
+    const exportCalendarToExcel = () => {
+        const year = selectedDate.getFullYear();
+        const month = selectedDate.getMonth() + 1;
+        const lastDay = new Date(year, month, 0).getDate();
+        const firstDayObj = new Date(year, month - 1, 1);
+        const startDayOfWeek = firstDayObj.getDay(); // 0 = 일요일
+
+        // 엑셀 데이터 준비
+        const excelData = [];
+
+        // 제목 행
+        excelData.push([`${year}년 ${month}월 출석부`]);
+        excelData.push([]); // 빈 행
+
+        // 요일 헤더
+        const weekdayHeader = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+        excelData.push(weekdayHeader);
+
+        // 달력 데이터 생성
+        let currentDay = 1;
+        let weekRow = [];
+
+        // 첫 주 - 시작 요일까지 빈 칸 채우기
+        for (let i = 0; i < startDayOfWeek; i++) {
+            weekRow.push('');
+        }
+
+        // 날짜 채우기
+        while (currentDay <= lastDay) {
+            const date = new Date(year, month - 1, currentDay);
+            const dateStr = formatLocalDate(date);
+            const dayOfWeek = date.getDay();
+            const dayName = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][dayOfWeek];
+
+            // 해당 날짜에 출석해야 하는 학생들 찾기
+            const expectedStudentsForDay = students.filter(s => s.status === 'ACTIVE' && s[dayName]);
+            const dayAttendances = monthAttendances.filter(a => a.attendanceDate === dateStr);
+
+            // 날짜 셀 내용 생성 (날짜 + 줄바꿈 + 학생 명단)
+            let cellContent = `${currentDay}일`;
+
+            if (expectedStudentsForDay.length > 0) {
+                expectedStudentsForDay.forEach(student => {
+                    const attendance = dayAttendances.find(a => a.studentId === student.id);
+                    let status = '미체크'; // 기본값
+                    if (attendance) {
+                        status = attendance.isPresent ? 'O' : 'X';
+                    }
+                    // 줄바꿈 문자를 사용하여 한 셀에 여러 줄 표시
+                    cellContent += `\n${student.name} (${status})`;
+                });
+            } else {
+                // 출석 대상이 없는 경우 날짜만 표시하거나 표시 생략
+            }
+
+            weekRow.push(cellContent);
+
+            // 토요일(6)이거나 마지막 날이면 행 추가
+            if (dayOfWeek === 6 || currentDay === lastDay) {
+                // 마지막 주의 남은 빈 칸 채우기
+                while (weekRow.length < 7) {
+                    weekRow.push('');
+                }
+                excelData.push(weekRow);
+                weekRow = [];
+            }
+
+            currentDay++;
+        }
+
+        // 엑셀 워크시트 생성
+        const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+
+        // 셀 스타일 및 병합 설정
+        // 제목 행 병합 (A1:G1)
+        if (!worksheet['!merges']) worksheet['!merges'] = [];
+        worksheet['!merges'].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } });
+
+        // 열 너비 설정 (모든 열 넓게)
+        const colWidths = Array(7).fill({ wch: 20 });
+        worksheet['!cols'] = colWidths;
+
+        // 행 높이 설정
+        // 제목(30), 빈행(default), 요일(20), 날짜행들(100 - 내용이 많을 수 있으므로 높게)
+        const rowHeights = [
+            { hpt: 30 }, // 제목
+            { hpt: 15 }, // 빈 행
+            { hpt: 20 }, // 요일 헤더
+        ];
+
+        // 데이터 행 높이 추가
+        const dataRowCount = excelData.length - 3; // 제목, 빈행, 요일헤더 제외
+        for (let i = 0; i < dataRowCount; i++) {
+            rowHeights.push({ hpt: 120 }); // 날짜 셀 높이
+        }
+        worksheet['!rows'] = rowHeights;
+
+        // 정렬 스타일은 무료 버전 xlsx 라이브러리에서 적용되지 않을 수 있지만, 
+        // 줄바꿈(\n)은 텍스트 랩핑이 활성화된 뷰어에서 보일 것임.
+
+        // 워크북 생성 및 저장
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, `${year}년 ${month}월`);
+
+        // 파일 다운로드
+        XLSX.writeFile(workbook, `출석부_${year}년_${month}월_달력형.xlsx`);
+    };
+
     const tileContent = ({ date, view }) => {
         if (view === 'month') {
-            const expected = getExpectedCountForDate(date);
+            const expectedStudentsForDate = getExpectedStudents(date);
+            const expected = expectedStudentsForDate.length;
             const attended = getAttendanceCountForDate(date);
+            const dateStr = formatLocalDate(date);
 
             if (expected > 0) {
+                // 해당 날짜의 출석 기록 가져오기
+                const dayAttendances = monthAttendances.filter(a => a.attendanceDate === dateStr);
+
                 return (
                     <div className="calendar-tile-content">
                         <span className={attended === expected ? 'all-attended' : attended > 0 ? 'partial-attended' : 'none-attended'}>
                             {attended}/{expected}
                         </span>
+                        <div className="student-names">
+                            {expectedStudentsForDate.map((student, index) => {
+                                // 해당 학생의 출석 여부 확인
+                                const studentAttendance = dayAttendances.find(a => a.studentId === student.id);
+                                const isPresent = studentAttendance && studentAttendance.isPresent;
+
+                                return (
+                                    <span
+                                        key={student.id}
+                                        className={`student-name ${isPresent ? 'attended' : 'not-attended'}`}
+                                    >
+                                        {student.name}
+                                    </span>
+                                );
+                            })}
+                        </div>
                     </div>
                 );
             }
@@ -170,7 +300,17 @@ function Attendance() {
         if (view === 'month') {
             const isToday = date.toDateString() === new Date().toDateString();
             const isSelected = date.toDateString() === selectedDate.toDateString();
-            return isToday ? 'today-tile' : isSelected ? 'selected-tile' : '';
+            let classes = '';
+
+            if (isToday) classes += 'today-tile ';
+            if (isSelected) classes += 'selected-tile ';
+
+            // 요일별 색상 클래스 추가
+            const day = date.getDay();
+            if (day === 0) classes += 'sunday-tile '; // 일요일
+            if (day === 6) classes += 'saturday-tile '; // 토요일
+
+            return classes.trim();
         }
         return '';
     };
@@ -341,6 +481,11 @@ function Attendance() {
                             </div>
                         </div>
                         <p className="calendar-hint">날짜를 클릭하면 해당 날짜의 출석 관리로 이동합니다.</p>
+                        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                            <button className="btn btn-primary" onClick={exportCalendarToExcel}>
+                                <FiDownload /> 캘린더형 엑셀 다운로드
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
