@@ -63,17 +63,21 @@ public class AuthController {
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
         try {
-            // 현재 인증된 사용자 가져오기
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            // username이 제공되지 않은 경우
+            if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "Username is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            }
 
-            Admin admin = adminMapper.findByUsername(username)
+            // 사용자 정보 조회
+            Admin admin = adminMapper.findByUsername(request.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             // 현재 비밀번호 확인
             if (!passwordEncoder.matches(request.getCurrentPassword(), admin.getPassword())) {
                 Map<String, String> error = new HashMap<>();
-                error.put("message", "Current password is incorrect");
+                error.put("message", "현재 비밀번호가 올바르지 않습니다");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
             }
 
@@ -82,12 +86,12 @@ public class AuthController {
             adminMapper.updatePassword(admin.getId(), encodedPassword);
 
             Map<String, String> response = new HashMap<>();
-            response.put("message", "Password changed successfully");
+            response.put("message", "비밀번호가 성공적으로 변경되었습니다");
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
-            error.put("message", "Failed to change password");
+            error.put("message", "비밀번호 변경에 실패했습니다");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
